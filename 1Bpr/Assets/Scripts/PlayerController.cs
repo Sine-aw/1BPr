@@ -14,10 +14,13 @@ public class NewMonoBehaviourScript : MonoBehaviour
     private bool isGrounded;
     private float moveInput;
 
+    float score;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         pAni = GetComponent<Animator>();
+        score = 0f;
     }
 
     private void Update()
@@ -57,12 +60,20 @@ public class NewMonoBehaviourScript : MonoBehaviour
 
         if (collision.CompareTag("Finish"))
         {
+            HighScore.TrySet(SceneManager.GetActiveScene().buildIndex, (int)score);
+            
             collision.GetComponent<LevelObject>().MoveToNextLevel();
         }
 
         if (collision.CompareTag("Enemy"))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
+        if (collision.CompareTag("Item"))
+        {
+            score += 10f;
+            Destroy(collision.gameObject);
         }
     }
 }
